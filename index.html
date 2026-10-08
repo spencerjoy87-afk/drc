@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIRTEL CONGO</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+
+      :root {
+        --airtel-red: #E40000;
+        --airtel-red-dark: #B00000;
+        --airtel-red-light: #FF1A1A;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #0a0a0a;
+        color: #fff;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ---------- Root wrapper ---------- */
+      .ann-root {
+        position: relative;
+        min-height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        background: radial-gradient(circle at 20% 10%, #2a0000 0%, #0a0a0a 60%),
+                    radial-gradient(circle at 80% 90%, #4a0000 0%, transparent 55%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      /* ---------- Blobs (all Airtel red) ---------- */
+      .ann-blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.55;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .ann-blob-1 {
+        width: 420px; height: 420px;
+        background: var(--airtel-red);
+        top: -120px; left: -120px;
+        animation: ann-float 12s ease-in-out infinite;
+      }
+      .ann-blob-2 {
+        width: 360px; height: 360px;
+        background: var(--airtel-red-dark);
+        bottom: -100px; right: -80px;
+        animation: ann-float 15s ease-in-out infinite reverse;
+      }
+      .ann-blob-3 {
+        width: 280px; height: 280px;
+        background: var(--airtel-red-light);
+        top: 40%; left: 55%;
+        animation: ann-float 18s ease-in-out infinite;
+      }
+      @keyframes ann-float {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50%      { transform: translate(30px, -40px) scale(1.08); }
+      }
+
+      .ann-confetti-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* ---------- Inner content ---------- */
+      .ann-inner {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 640px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem;
+        background: rgba(15, 15, 15, 0.6);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(228, 0, 0, 0.25);
+        border-radius: 24px;
+        box-shadow: 0 30px 80px rgba(228, 0, 0, 0.15);
+      }
+
+      /* ---------- Logo bar ---------- */
+      .ann-logo-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .ann-logo {
+        height: 34px;
+        width: auto;
+        display: block;
+      }
+      .ann-logo-divider {
+        width: 1px;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .ann-25-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #fff;
+        padding: 0.35rem 0.75rem;
+        border: 1px solid rgba(228, 0, 0, 0.6);
+        border-radius: 999px;
+        background: rgba(228, 0, 0, 0.15);
+        text-transform: uppercase;
+      }
+
+      /* ---------- Hero ---------- */
+      .ann-hero {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .ann-anniversary-ring {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: conic-gradient(from 0deg, var(--airtel-red), var(--airtel-red-dark), var(--airtel-red));
+        padding: 6px;
+        box-shadow: 0 0 40px rgba(228, 0, 0, 0.55);
+        animation: ann-spin 8s linear infinite;
+      }
+      .ann-anniversary-ring > * {
+        animation: ann-spin 8s linear infinite reverse;
+      }
+      @keyframes ann-spin {
+        to { transform: rotate(360deg); }
+      }
+      .ann-anniversary-ring::after {
+        content: "";
+        position: absolute;
+        inset: 6px;
+        border-radius: 50%;
+        background: #140000;
+        z-index: -1;
+      }
+
+      .ann-25-num {
+        font-size: 2.6rem;
+        font-weight: 900;
+        line-height: 1;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      }
+      .ann-25-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.25em;
+        color: rgba(255, 255, 255, 0.85);
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+
+      .ann-hero-title {
+        font-size: clamp(1.6rem, 5vw, 2.4rem);
+        font-weight: 800;
+        line-height: 1.2;
+        margin: 0;
+        color: #fff;
+      }
+      .ann-gold {
+        background: linear-gradient(90deg, var(--airtel-red), var(--airtel-red-light), var(--airtel-red));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .ann-hero-sub {
+        margin: 0;
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 480px;
+        line-height: 1.55;
+      }
+
+      /* ---------- Card ---------- */
+      .ann-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(228, 0, 0, 0.2);
+        border-radius: 18px;
+      }
+      .ann-card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+      }
+      .ann-card-title-icon { font-size: 1.2rem; }
+
+      .ann-input-wrap {
+        display: flex;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+      .ann-input-wrap:focus-within {
+        border-color: var(--airtel-red);
+        box-shadow: 0 0 0 3px rgba(228, 0, 0, 0.2);
+      }
+      .ann-prefix {
+        padding: 0.85rem 0.9rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+        background: rgba(228, 0, 0, 0.15);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.95rem;
+      }
+      .ann-input {
+        flex: 1;
+        padding: 0.85rem 1rem;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        font-size: 0.95rem;
+      }
+      .ann-input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .ann-check-btn {
+        padding: 0.9rem 1rem;
+        border: none;
+        border-radius: 12px;
+        background: var(--airtel-red);
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.98rem;
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+        box-shadow: 0 8px 24px rgba(228, 0, 0, 0.45);
+      }
+      .ann-check-btn:hover {
+        transform: translateY(-1px);
+        background: var(--airtel-red-light);
+        box-shadow: 0 10px 30px rgba(228, 0, 0, 0.6);
+      }
+      .ann-check-btn:active {
+        transform: translateY(0);
+      }
+
+      /* ---------- Trust row ---------- */
+      .ann-trust-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+      .ann-trust-pill {
+        font-size: 0.78rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        background: rgba(228, 0, 0, 0.1);
+        border: 1px solid rgba(228, 0, 0, 0.25);
+        color: rgba(255, 255, 255, 0.85);
+        white-space: nowrap;
+      }
+
+      /* ---------- Responsive ---------- */
+      @media (max-width: 480px) {
+        .ann-inner { padding: 1.25rem; border-radius: 18px; }
+        .ann-logo { height: 26px; }
+        .ann-anniversary-ring { width: 110px; height: 110px; }
+        .ann-25-num { font-size: 2rem; }
+        .ann-hero-title { font-size: 1.5rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="ann-root">
+        <div class="ann-blob ann-blob-1"></div>
+        <div class="ann-blob ann-blob-2"></div>
+        <div class="ann-blob ann-blob-3"></div>
+        <div class="ann-confetti-layer"></div>
+        <div class="ann-inner">
+          <div class="ann-logo-bar">
+            <img alt="Airtel" class="ann-logo" src="https://cdn-webportal.airtelstream.net/website/zambia/assets/images/logo.svg">
+            <div class="ann-logo-divider"></div>
+            <span class="ann-25-badge">25 ans ensemble</span>
+          </div>
+          <div class="ann-hero">
+            <div class="ann-anniversary-ring">
+              <div class="ann-25-num">25</div>
+              <div class="ann-25-label">Ans</div>
+            </div>
+            <h1 class="ann-hero-title">Grande Célébration<br><span class="ann-gold">Airtel DRC 🎉</span></h1>
+            <p class="ann-hero-sub">Pour nos 25 ans, nous offrons des cash prizes exclusifs à nos abonnés fidèles. Vérifiez votre éligibilité maintenant !</p>
+          </div>
+          <div class="ann-card">
+            <div class="ann-card-title"><span class="ann-card-title-icon">🎁</span> Vérifier mon éligibilité</div>
+            <div class="ann-input-wrap">
+              <span class="ann-prefix">+243</span>
+              <input class="ann-input" inputmode="numeric" placeholder="912345678 ou 0912345678" maxlength="10" type="tel" value="">
+            </div>
+            <button class="ann-check-btn">🔍 Vérifier mon numéro</button>
+          </div>
+          <div class="ann-trust-row">
+            <div class="ann-trust-pill">🔒 Sécurisé</div>
+            <div class="ann-trust-pill">⚡ Résultat instantané</div>
+            <div class="ann-trust-pill">👥 25K gagnants</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
