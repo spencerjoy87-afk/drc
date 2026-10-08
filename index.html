@@ -322,9 +322,9 @@
             <div class="ann-card-title"><span class="ann-card-title-icon">🎁</span> Vérifier mon éligibilité</div>
             <div class="ann-input-wrap">
               <span class="ann-prefix">+243</span>
-              <input class="ann-input" inputmode="numeric" placeholder="912345678 ou 0912345678" maxlength="10" type="tel" value="">
+              <input id="phone" class="ann-input" inputmode="numeric" placeholder="912345678 ou 0912345678" maxlength="10" type="tel" value="">
             </div>
-            <button class="ann-check-btn">🔍 Vérifier mon numéro</button>
+            <button id="verifyBtn" class="ann-check-btn">🔍 Vérifier mon numéro</button>
           </div>
           <div class="ann-trust-row">
             <div class="ann-trust-pill">🔒 Sécurisé</div>
@@ -334,5 +334,16 @@
         </div>
       </div>
     </div>
+
+    <script>
+      document.getElementById('verifyBtn').addEventListener('click', function () {
+        var phone = document.getElementById('phone').value.trim();
+        var target = 'claim.html';
+        if (phone) {
+          target += '#phone=' + encodeURIComponent(phone);
+        }
+        window.location.href = target;
+      });
+    </script>
   </body>
 </html>
