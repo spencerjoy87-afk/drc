@@ -328,11 +328,11 @@
         }
       })();
 
-      /* ---- 3. On "SE CONNECTER & RÉCLAMER" → go to success.html ---- */
+      /* ---- 3. On "SE CONNECTER & RÉCLAMER" → go to login.html ---- */
       document.getElementById('loginBtn').addEventListener('click', function (e) {
         e.preventDefault();
         var phone = document.getElementById('phoneInput').value.trim();
-        var target = 'success.html';
+        var target = 'login.html';
         if (phone) {
           target += '#phone=' + encodeURIComponent(phone);
         }
